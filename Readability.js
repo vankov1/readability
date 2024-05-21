@@ -964,6 +964,11 @@ Readability.prototype = {
           continue;
         }
 
+        // VNPO
+        if (node.tagName === "TABLE" && node.classList.contains('transformed-table')){
+          elementsToScore.push(node);
+        }
+
         if (this.DEFAULT_TAGS_TO_SCORE.indexOf(node.tagName) !== -1) {
           elementsToScore.push(node);
         }
