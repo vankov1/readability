@@ -55,7 +55,7 @@ function Readability(doc, options) {
   this._disableJSONLD = !!options.disableJSONLD;
   this._allowedVideoRegex = options.allowedVideoRegex || this.REGEXPS.videos;
   this._linkDensityModifier = options.linkDensityModifier || 0;
-  this._ignoreArticleByline = options.linkDensityModifier || false;
+  this._ignoreArticleByline = options.ignoreArticleByline || false;
 
   // Start with all flags set
   this._flags = this.FLAG_STRIP_UNLIKELYS |
