@@ -55,6 +55,7 @@ function Readability(doc, options) {
   this._disableJSONLD = !!options.disableJSONLD;
   this._allowedVideoRegex = options.allowedVideoRegex || this.REGEXPS.videos;
   this._linkDensityModifier = options.linkDensityModifier || 0;
+  this._ignoreArticleByline = options.linkDensityModifier || false;
 
   // Start with all flags set
   this._flags = this.FLAG_STRIP_UNLIKELYS |
@@ -841,8 +842,17 @@ Readability.prototype = {
   },
 
   _checkByline: function(node, matchString) {
-    if (this._articleByline) {
+    if (this._articleByline || this._ignoreArticleByline) {
       return false;
+    }
+
+    /*
+     * Adding the byline in H1 / H2 / H3 tags is highly unlikely.
+     * So, we can safely assume that the byline is not in the node.
+     * Otherwise we could get wrong content.
+     */
+    if (node.tagName === "H1" || node.tagName === "H2" || node.tagName === "H3") {
+        return false;
     }
 
     if (node.getAttribute !== undefined) {
