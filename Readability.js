@@ -438,6 +438,34 @@ Readability.prototype = {
     });
   },
 
+  _transferValidAttributes: function(sourceElement, targetElement) {
+    // Transfer only valid attributes: https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes
+    const validAttributes = [
+      "accept", "accept-charset", "accesskey", "action", "align", "allow", "alt", "as", "async", "autocapitalize", "autocomplete", 
+      "autoplay", "background", "bgcolor", "border", "capture", "charset", "checked", "cite", "class", "color", "cols", "colspan", 
+      "content", "contenteditable", "controls", "coords", "crossorigin", "csp", "data", "datetime", "decoding", "default", "defer", 
+      "dir", "dirname", "disabled", "download", "draggable", "enctype", "enterkeyhint", "for", "form", "formaction", "formenctype", 
+      "formmethod", "formnovalidate", "formtarget", "headers", "height", "hidden", "high", "href", "hreflang", "http-equiv", "id", 
+      "inputmode", "ismap", "itemprop", "kind", "label", "lang", "language", "loading", "list", "loop", "low", "manifest", "max", 
+      "maxlength", "minlength", "media", "method", "min", "multiple", "muted", "name", "novalidate", "open", "optimum", "pattern", 
+      "ping", "placeholder", "playsinline", "poster", "preload", "readonly", "referrerpolicy", "rel", "required", "reversed", "role", 
+      "rows", "rowspan", "sandbox", "scope", "scoped", "selected", "shape", "size", "sizes", "slot", "span", "spellcheck", "src", 
+      "srcdoc", "srclang", "srcset", "start", "step", "style", "summary", "tabindex", "target", "title", "translate", "type", "usemap", 
+      "value", "width", "wrap"
+    ];
+
+    // Iterate over all attributes of the source element
+    for (let i = 0; i < sourceElement.attributes.length; i++) {
+      let attributeName = sourceElement.attributes[i].name;
+
+      // Check if the attribute is in the list of valid attributes or is a data attribute
+      if (validAttributes.includes(attributeName) || attributeName.startsWith('data-')) {
+        // Transfer the attribute to the target element
+        targetElement.setAttribute(attributeName, sourceElement.attributes[i].value);
+      }
+    }
+  },
+
   _simplifyNestedElements: function(articleContent) {
     var node = articleContent;
 
@@ -448,9 +476,9 @@ Readability.prototype = {
           continue;
         } else if (this._hasSingleTagInsideElement(node, "DIV") || this._hasSingleTagInsideElement(node, "SECTION")) {
           var child = node.children[0];
-          for (var i = 0; i < node.attributes.length; i++) {
-            child.setAttribute(node.attributes[i].name, node.attributes[i].value);
-          }
+
+          this._transferValidAttributes(child, node);
+          
           node.parentNode.replaceChild(child, node);
           node = child;
           continue;
