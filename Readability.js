@@ -58,6 +58,13 @@ function Readability(doc, options) {
   this._ignoreArticleByline = !!options.ignoreArticleByline;
   this._shouldRemoveTitleHeader = !!options.shouldRemoveTitleHeader;
 
+  /**
+   * Elements to score by default (IDs)
+   * e.g. DIVs are not scored (and should not be) unless their ID is in this list
+   * @type {Array.<String>}
+   **/
+  this._idsToScore = this.IDS_TO_SCORE.concat(options.idsToScore || []);
+
   // Start with all flags set
   this._flags = this.FLAG_STRIP_UNLIKELYS |
                 this.FLAG_WEIGHT_CLASSES |
@@ -189,6 +196,8 @@ Readability.prototype = {
     "apos": "'",
   },
 
+  // Nodes with these IDs should be scored by readability.
+  IDS_TO_SCORE: ["main-content"],
   /**
    * Run any post-process modifications to article content as necessary.
    *
@@ -443,16 +452,16 @@ Readability.prototype = {
   _transferValidAttributes: function(sourceElement, targetElement) {
     // Transfer only valid attributes: https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes
     const validAttributes = [
-      "accept", "accept-charset", "accesskey", "action", "align", "allow", "alt", "as", "async", "autocapitalize", "autocomplete", 
-      "autoplay", "background", "bgcolor", "border", "capture", "charset", "checked", "cite", "class", "color", "cols", "colspan", 
-      "content", "contenteditable", "controls", "coords", "crossorigin", "csp", "data", "datetime", "decoding", "default", "defer", 
-      "dir", "dirname", "disabled", "download", "draggable", "enctype", "enterkeyhint", "for", "form", "formaction", "formenctype", 
-      "formmethod", "formnovalidate", "formtarget", "headers", "height", "hidden", "high", "href", "hreflang", "http-equiv", "id", 
-      "inputmode", "ismap", "itemprop", "kind", "label", "lang", "language", "loading", "list", "loop", "low", "manifest", "max", 
-      "maxlength", "minlength", "media", "method", "min", "multiple", "muted", "name", "novalidate", "open", "optimum", "pattern", 
-      "ping", "placeholder", "playsinline", "poster", "preload", "readonly", "referrerpolicy", "rel", "required", "reversed", "role", 
-      "rows", "rowspan", "sandbox", "scope", "scoped", "selected", "shape", "size", "sizes", "slot", "span", "spellcheck", "src", 
-      "srcdoc", "srclang", "srcset", "start", "step", "style", "summary", "tabindex", "target", "title", "translate", "type", "usemap", 
+      "accept", "accept-charset", "accesskey", "action", "align", "allow", "alt", "as", "async", "autocapitalize", "autocomplete",
+      "autoplay", "background", "bgcolor", "border", "capture", "charset", "checked", "cite", "class", "color", "cols", "colspan",
+      "content", "contenteditable", "controls", "coords", "crossorigin", "csp", "data", "datetime", "decoding", "default", "defer",
+      "dir", "dirname", "disabled", "download", "draggable", "enctype", "enterkeyhint", "for", "form", "formaction", "formenctype",
+      "formmethod", "formnovalidate", "formtarget", "headers", "height", "hidden", "high", "href", "hreflang", "http-equiv", "id",
+      "inputmode", "ismap", "itemprop", "kind", "label", "lang", "language", "loading", "list", "loop", "low", "manifest", "max",
+      "maxlength", "minlength", "media", "method", "min", "multiple", "muted", "name", "novalidate", "open", "optimum", "pattern",
+      "ping", "placeholder", "playsinline", "poster", "preload", "readonly", "referrerpolicy", "rel", "required", "reversed", "role",
+      "rows", "rowspan", "sandbox", "scope", "scoped", "selected", "shape", "size", "sizes", "slot", "span", "spellcheck", "src",
+      "srcdoc", "srclang", "srcset", "start", "step", "style", "summary", "tabindex", "target", "title", "translate", "type", "usemap",
       "value", "width", "wrap"
     ];
 
@@ -480,7 +489,7 @@ Readability.prototype = {
           var child = node.children[0];
 
           this._transferValidAttributes(child, node);
-          
+
           node.parentNode.replaceChild(child, node);
           node = child;
           continue;
@@ -1007,11 +1016,16 @@ Readability.prototype = {
         }
 
         // VNPO
-        if (node.tagName === "TABLE" && node.classList.contains('transformed-table')){
+        if (node.tagName === "TABLE" && node.classList.contains("transformed-table")) {
           elementsToScore.push(node);
         }
 
         if (this.DEFAULT_TAGS_TO_SCORE.indexOf(node.tagName) !== -1) {
+          elementsToScore.push(node);
+        }
+
+        if (node.getAttribute("id") && this._idsToScore.includes(node.getAttribute("id"))) {
+          this.log("Whitelisted ID pushed for scoring - " + matchString);
           elementsToScore.push(node);
         }
 
