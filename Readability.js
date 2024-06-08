@@ -134,7 +134,7 @@ Readability.prototype = {
     // Readability-readerable.js. Please keep both copies in sync.
     // Removed negatives: gdpr
     unlikelyCandidates: /-ad-|ai2html|banner|breadcrumbs|combx|comment|community|cover-wrap|disqus|extra|footer|header|legends|menu|related|remark|replies|rss|shoutbox|sidebar|skyscraper|social|sponsor|supplemental|ad-break|agegate|pagination|pager|popup|yom-remote/i,
-    okMaybeItsACandidate: /and|article|body|column|content|main|shadow/i,
+    okMaybeItsACandidate: /and|article|body|column|content|main|shadow|heading/i,
 
     positive: /article|body|content|entry|hentry|h-entry|main|page|pagination|post|text|blog|story/i,
     vnpoPositive: /terms|conditions|privacy|policy|legal|disclaimer|tos|refund/i,
