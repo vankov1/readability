@@ -740,21 +740,21 @@ Readability.prototype = {
       this._cleanMatchedNodes(topCandidate, function (node, matchString) {
         let removeElement = this.REGEXPS.shareElements.test(matchString) && node.textContent.length < shareElementThreshold;
 
-        if (remove) {
-					this.log("Removing node with share class: " + node.className + " and content: " + node.textContent);
-				}
+        if (removeElement) {
+	  this.log("Removing node with share class: " + node.className + " and content: " + node.textContent);
+	}
         
         if (node.tagName === "H1" || node.tagName === "H2" || node.tagName === "H3" || node.tagName === "H4" ) {
           this.log("It's a title, keep it: " + node.className + " and content: " + node.textContent)
-          remove = false;
+          removeElement = false;
         }
 
         if (node.tagName === "A" && (node.parentNode.tagName === "H1" || node.parentNode.tagName === "H2" || node.parentNode.tagName === "H3")) {
           this.log("It's a title with link, keep it: " + node.className + " and content: " + node.textContent)
-          remove = false;
+          removeElement = false;
         }
 
-        return remove;
+        return removeElement;
       });
     });
 
