@@ -137,6 +137,7 @@ Readability.prototype = {
     okMaybeItsACandidate: /and|article|body|column|content|main|shadow/i,
 
     positive: /article|body|content|entry|hentry|h-entry|main|page|pagination|post|text|blog|story/i,
+    vnpoPositive: /terms|conditions|privacy|policy|legal|disclaimer|tos/i,
     // Removed negatives: gdpr, share
     negative: /-ad-|hidden|^hid$| hid$| hid |^hid |banner|combx|comment|com-|contact|foot|footer|footnote|masthead|media|meta|outbrain|promo|related|scroll|shoutbox|sidebar|skyscraper|sponsor|shopping|tags|tool|widget/i,
     extraneous: /print|archive|comment|discuss|e[\-]?mail|share|reply|all|login|sign|single|utility/i,
@@ -1886,7 +1887,7 @@ Readability.prototype = {
       if (this.REGEXPS.negative.test(e.className))
         weight -= 25;
 
-      if (this.REGEXPS.positive.test(e.className))
+      if (this.REGEXPS.positive.test(e.className) || this.REGEXPS.vnpoPositive.test(e.className))
         weight += 25;
     }
 
@@ -1895,7 +1896,7 @@ Readability.prototype = {
       if (this.REGEXPS.negative.test(e.id))
         weight -= 25;
 
-      if (this.REGEXPS.positive.test(e.id))
+      if (this.REGEXPS.positive.test(e.id) || this.REGEXPS.vnpoPositive.test(e.id))
         weight += 25;
     }
 
