@@ -2243,7 +2243,7 @@ Readability.prototype = {
           if (input > Math.floor(p/3)) {
             errs.push(`Too many inputs per p. (input=${input}, p=${p})`);
           }
-          if (!isList && !isFigureChild && headingDensity < 0.9 && contentLength < 25 && (img === 0 || img > 2) && linkDensity > 0) {
+          if (!isList && !isFigureChild && headingDensity < 0.9 && contentLength < 25 && (img === 0 || img > 2) && linkDensity > (0 + this._linkDensityModifier)) {
             errs.push(`Suspiciously short. (headingDensity=${headingDensity}, img=${img}, linkDensity=${linkDensity})`);
           }
           if (!isList && weight < 25 && linkDensity > (0.2 + this._linkDensityModifier)) {
