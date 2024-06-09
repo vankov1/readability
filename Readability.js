@@ -763,7 +763,8 @@ Readability.prototype = {
     this._clean(articleContent, "textarea");
     this._clean(articleContent, "select");
     this._clean(articleContent, "button");
-    this._cleanHeaders(articleContent);
+    // VNPO - Don't remove headers
+    // this._cleanHeaders(articleContent);
 
     // Do these last as the previous stuff may have removed junk
     // that will affect these
