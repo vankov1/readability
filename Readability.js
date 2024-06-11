@@ -64,6 +64,7 @@ function Readability(doc, options) {
    * @type {Array.<String>}
    **/
   this._idsToScore = this.IDS_TO_SCORE.concat(options.idsToScore || []);
+  this._selectorsToScore = this.SELECTORS_TO_SCORE.concat(options.selectorsToScore || []);
 
   // Start with all flags set
   this._flags = this.FLAG_STRIP_UNLIKELYS |
@@ -199,6 +200,8 @@ Readability.prototype = {
 
   // Nodes with these IDs should be scored by readability.
   IDS_TO_SCORE: ["main-content"],
+  SELECTORS_TO_SCORE: [], //e.g. #main-content
+
   /**
    * Run any post-process modifications to article content as necessary.
    *
@@ -743,7 +746,7 @@ Readability.prototype = {
         if (removeElement) {
 	  this.log("Removing node with share class: " + node.className + " and content: " + node.textContent);
 	}
-        
+
         if (node.tagName === "H1" || node.tagName === "H2" || node.tagName === "H3" || node.tagName === "H4" ) {
           this.log("It's a title, keep it: " + node.className + " and content: " + node.textContent)
           removeElement = false;
@@ -1046,6 +1049,13 @@ Readability.prototype = {
           this.log("Whitelisted ID pushed for scoring - " + matchString);
           elementsToScore.push(node);
         }
+
+        this._selectorsToScore.forEach(selector => {
+          if (node.matches(selector)) {
+            this.log("Whitelisted Selector pushed for scoring - " + matchString);
+            elementsToScore.push(node);
+          }
+        });
 
         // Turn all divs that don't have children block level elements into p's
         if (node.tagName === "DIV") {
