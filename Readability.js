@@ -57,6 +57,7 @@ function Readability(doc, options) {
   this._linkDensityModifier = options.linkDensityModifier || 0;
   this._ignoreArticleByline = !!options.ignoreArticleByline;
   this._shouldRemoveTitleHeader = !!options.shouldRemoveTitleHeader;
+  this._preventGaps = !!options.preventGaps;
 
   /**
    * Elements to score by default (IDs)
@@ -1287,7 +1288,7 @@ Readability.prototype = {
         this.log("Looking at sibling node:", sibling, sibling.readability ? ("with score " + sibling.readability.contentScore) : "");
         this.log("Sibling has score", sibling.readability ? sibling.readability.contentScore : "Unknown");
 
-        if (sibling === topCandidate) {
+        if (sibling === topCandidate || this._preventGaps) {
           append = true;
         } else {
           var contentBonus = 0;
