@@ -1288,7 +1288,7 @@ Readability.prototype = {
         this.log("Looking at sibling node:", sibling, sibling.readability ? ("with score " + sibling.readability.contentScore) : "");
         this.log("Sibling has score", sibling.readability ? sibling.readability.contentScore : "Unknown");
 
-        if (sibling === topCandidate || this._preventGaps) {
+        if (sibling === topCandidate) {
           append = true;
         } else {
           var contentBonus = 0;
@@ -1311,6 +1311,12 @@ Readability.prototype = {
                        nodeContent.search(/\.( |$)/) !== -1) {
               append = true;
             }
+          }
+
+          // Do not remove elements with tables
+          if (sibling.querySelector("table")) {
+            this.log("has table child elements", sibling);
+            append = true;
           }
         }
 
