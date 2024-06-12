@@ -170,7 +170,7 @@ Readability.prototype = {
 
   DIV_TO_P_ELEMS: new Set([ "BLOCKQUOTE", "DL", "DIV", "IMG", "OL", "P", "PRE", "TABLE", "UL" ]),
 
-  ALTER_TO_DIV_EXCEPTIONS: ["DIV", "ARTICLE", "SECTION", "P", "TABLE"],
+  ALTER_TO_DIV_EXCEPTIONS: ["DIV", "ARTICLE", "SECTION", "P", "TABLE", "H1", "H2", "H3", "h4", "h5", "h6"],
 
   PRESENTATIONAL_ATTRIBUTES: [ "align", "background", "bgcolor", "border", "cellpadding", "cellspacing", "frame", "hspace", "rules", "style", "valign", "vspace" ],
 
@@ -467,7 +467,7 @@ Readability.prototype = {
       "ping", "placeholder", "playsinline", "poster", "preload", "readonly", "referrerpolicy", "rel", "required", "reversed", "role",
       "rows", "rowspan", "sandbox", "scope", "scoped", "selected", "shape", "size", "sizes", "slot", "span", "spellcheck", "src",
       "srcdoc", "srclang", "srcset", "start", "step", "style", "summary", "tabindex", "target", "title", "translate", "type", "usemap",
-      "value", "width", "wrap"
+      "value", "width", "wrap",
     ];
 
     // Iterate over all attributes of the source element
@@ -475,7 +475,7 @@ Readability.prototype = {
       let attributeName = sourceElement.attributes[i].name;
 
       // Check if the attribute is in the list of valid attributes or is a data attribute
-      if (validAttributes.includes(attributeName) || attributeName.startsWith('data-')) {
+      if (validAttributes.includes(attributeName) || attributeName.startsWith("data-")) {
         // Transfer the attribute to the target element
         targetElement.setAttribute(attributeName, sourceElement.attributes[i].value);
       }
@@ -746,15 +746,15 @@ Readability.prototype = {
 
         if (removeElement) {
 	  this.log("Removing node with share class: " + node.className + " and content: " + node.textContent);
-	}
+        }
 
         if (node.tagName === "H1" || node.tagName === "H2" || node.tagName === "H3" || node.tagName === "H4" ) {
-          this.log("It's a title, keep it: " + node.className + " and content: " + node.textContent)
+          this.log("It's a title, keep it: " + node.className + " and content: " + node.textContent);
           removeElement = false;
         }
 
         if (node.tagName === "A" && (node.parentNode.tagName === "H1" || node.parentNode.tagName === "H2" || node.parentNode.tagName === "H3")) {
-          this.log("It's a title with link, keep it: " + node.className + " and content: " + node.textContent)
+          this.log("It's a title with link, keep it: " + node.className + " and content: " + node.textContent);
           removeElement = false;
         }
 
@@ -914,7 +914,7 @@ Readability.prototype = {
      * Otherwise we could get wrong content.
      */
     if (node.tagName === "H1" || node.tagName === "H2" || node.tagName === "H3") {
-        return false;
+      return false;
     }
 
     if (node.getAttribute !== undefined) {
@@ -1292,6 +1292,9 @@ Readability.prototype = {
           append = true;
         } else {
           var contentBonus = 0;
+          let linkDensity = this._getLinkDensity(sibling);
+          let nodeContent = this._getInnerText(sibling);
+          let nodeLength = nodeContent.length;
 
           // Give a bonus if sibling nodes and top candidates have the example same classname
           if (sibling.className === topCandidate.className && topCandidate.className !== "")
@@ -1301,14 +1304,19 @@ Readability.prototype = {
               ((sibling.readability.contentScore + contentBonus) >= siblingScoreThreshold)) {
             append = true;
           } else if (sibling.nodeName === "P") {
-            var linkDensity = this._getLinkDensity(sibling);
-            var nodeContent = this._getInnerText(sibling);
-            var nodeLength = nodeContent.length;
 
             if (nodeLength > 80 && linkDensity < 0.25) {
               append = true;
             } else if (nodeLength < 80 && nodeLength > 0 && linkDensity === 0 &&
                        nodeContent.search(/\.( |$)/) !== -1) {
+              append = true;
+            }
+          } else if (sibling.nodeName === "H1" || sibling.nodeName === "H2" || sibling.nodeName === "H3" || sibling.nodeName === "H4") {
+            // Sometimes we have a heading with score Unknown, it ends up here
+            // We should check if it's a title and keep it
+            this.log("Vx: For some reason we have a header sibling", sibling, "with link density", linkDensity, "and length", nodeLength, "and content", nodeContent);
+
+            if (nodeLength > 5 && linkDensity < 0.15) {
               append = true;
             }
           }
