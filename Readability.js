@@ -140,8 +140,10 @@ Readability.prototype = {
 
     positive: /article|body|content|entry|hentry|h-entry|main|page|pagination|post|text|blog|story/i,
     vnpoPositive: /terms|conditions|privacy|policy|legal|disclaimer|tos|refund/i,
-    // Removed negatives: gdpr, share
-    negative: /-ad-|hidden|^hid$| hid$| hid |^hid |banner|combx|comment|com-|contact|foot|footer|footnote|masthead|media|meta|outbrain|promo|related|scroll|shoutbox|sidebar|skyscraper|sponsor|shopping|tags|tool|widget/i,
+    // Removed negatives: gdpr, share, contact
+    // gdpr -> removes GDPR sentences
+    // contact -> removes contact information within documents
+    negative: /-ad-|hidden|^hid$| hid$| hid |^hid |banner|combx|comment|com-|foot|footer|footnote|masthead|media|meta|outbrain|promo|related|scroll|shoutbox|sidebar|skyscraper|sponsor|shopping|tags|tool|widget/i,
     extraneous: /print|archive|comment|discuss|e[\-]?mail|share|reply|all|login|sign|single|utility/i,
     byline: /byline|author|dateline|writtenby|p-author/i,
     replaceFonts: /<(\/?)font[^>]*>/gi,
