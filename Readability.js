@@ -58,7 +58,8 @@ function Readability(doc, options) {
   this._ignoreArticleByline = !!options.ignoreArticleByline;
   this._shouldRemoveTitleHeader = !!options.shouldRemoveTitleHeader;
   this._preventGaps = !!options.preventGaps;
-
+  this._siblingScoreThresholdModifier = options.siblingScoreThresholdModifier || 0.2; // Smaller values make the filter more tolerant
+	
   /**
    * Elements to score by default (IDs)
    * e.g. DIVs are not scored (and should not be) unless their ID is in this list
@@ -1284,7 +1285,7 @@ Readability.prototype = {
       if (isPaging)
         articleContent.id = "readability-content";
 
-      var siblingScoreThreshold = Math.max(10, topCandidate.readability.contentScore * 0.2);
+      var siblingScoreThreshold = Math.max(10, topCandidate.readability.contentScore * this._siblingScoreThresholdModifier);
       // Keep potential top candidate's parent node to try to get text direction of it later.
       parentOfTopCandidate = topCandidate.parentNode;
       var siblings = parentOfTopCandidate.children;
