@@ -1121,8 +1121,9 @@ Readability.prototype = {
 
         // If this paragraph is less than 25 characters, don't even count it.
         var innerText = this._getInnerText(elementToScore);
-        if (innerText.length < 25)
-          return;
+        // Actially let's count everything, this code is 10y old, it skips short paragraphs like "Effective Feb 5, 2024"
+        // if (innerText.length < 25)
+        //  return;
 
         // Exclude nodes with no ancestor.
         var ancestors = this._getNodeAncestors(elementToScore, 5);
