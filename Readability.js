@@ -146,7 +146,8 @@ Readability.prototype = {
     // Removed negatives: gdpr, share, contact
     // gdpr -> removes GDPR sentences
     // contact -> removes contact information within documents
-    negative: /-ad-|hidden|^hid$| hid$| hid |^hid |banner|combx|comment|com-|foot|footer|footnote|masthead|media|meta|outbrain|promo|related|scroll|shoutbox|sidebar|skyscraper|sponsor|shopping|tags|tool|widget/i,
+    // media -> messing IDs like mediation
+    negative: /-ad-|hidden|^hid$| hid$| hid |^hid |banner|combx|comment|com-|foot|footer|footnote|masthead|meta|outbrain|promo|related|scroll|shoutbox|sidebar|skyscraper|sponsor|shopping|tags|tool|widget/i,
     extraneous: /print|archive|comment|discuss|e[\-]?mail|share|reply|all|login|sign|single|utility/i,
     byline: /byline|author|dateline|writtenby|p-author/i,
     replaceFonts: /<(\/?)font[^>]*>/gi,
