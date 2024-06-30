@@ -67,6 +67,8 @@ function Readability(doc, options) {
    **/
   this._idsToScore = this.IDS_TO_SCORE.concat(options.idsToScore || []);
   this._selectorsToScore = this.SELECTORS_TO_SCORE.concat(options.selectorsToScore || []);
+  this._tagsToScore = this.DEFAULT_TAGS_TO_SCORE.concat(options.tagsToScore || []);
+  
 
   // Start with all flags set
   this._flags = this.FLAG_STRIP_UNLIKELYS |
@@ -1051,7 +1053,7 @@ Readability.prototype = {
           elementsToScore.push(node);
         }
 
-        if (this.DEFAULT_TAGS_TO_SCORE.indexOf(node.tagName) !== -1) {
+        if (this._tagsToScore.indexOf(node.tagName) !== -1) {
           elementsToScore.push(node);
         }
 
