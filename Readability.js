@@ -1300,6 +1300,8 @@ Readability.prototype = {
         this.log("Looking at sibling node:", sibling, sibling.readability ? ("with score " + sibling.readability.contentScore) : "");
         this.log("Sibling has score", sibling.readability ? sibling.readability.contentScore : "Unknown");
 
+	sibling.setAttribute("data-content-score", sibling.readability ? sibling.readability.contentScore : "Unknown");
+
         if (sibling === topCandidate) {
           append = true;
         } else {
